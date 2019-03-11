@@ -17,6 +17,43 @@ import kotlinx.android.synthetic.main.item.view.*
 import kotlinx.coroutines.*
 import java.lang.Exception
 
+
+/***
+ *
+ *
+val job = GlobalScope.launch(Dispatchers.Main) {
+delay(2000) // launch协程挂起2000
+Log.e("tag", "-------launch------${Thread.currentThread().name}")
+
+//两个async 并发启动
+async(Dispatchers.IO) {
+delay(5000)//async挂起5000
+Log.e("tag", "-------async------${Thread.currentThread().name}")
+}
+
+try {
+val await = async(Dispatchers.IO) {
+delay(2000)//async挂起2000
+Log.e("tag", "-------async2------${Thread.currentThread().name}")
+delay(5000)//async挂起2000
+"Hahahah"  // 返回结果
+}
+val result = await.await()//等待结果返回，会阻塞当前协程
+Log.e("tag", "${result}     ====  ${Thread.currentThread().name}")
+} catch (ex: Exception) {
+
+} finally {
+
+}
+
+runBlocking(Dispatchers.IO) {
+Log.e("tag", "-------runBlocking------${Thread.currentThread().name}")
+}
+}
+Log.e("tag", "-------------${Thread.currentThread().name}")
+ *
+ *
+ */
 class MainActivity : AppCompatActivity() {
     private val datas = mutableListOf<String>()
 
@@ -24,38 +61,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-        val job = GlobalScope.launch(Dispatchers.Main) {
-            delay(2000) // launch协程挂起2000
-            Log.e("tag", "-------launch------${Thread.currentThread().name}")
-
-            //两个async 并发启动
-            async(Dispatchers.IO) {
-                delay(5000)//async挂起5000
-                Log.e("tag", "-------async------${Thread.currentThread().name}")
-            }
-
-            try {
-                val await = async(Dispatchers.IO) {
-                    delay(2000)//async挂起2000
-                    Log.e("tag", "-------async2------${Thread.currentThread().name}")
-                    delay(5000)//async挂起2000
-                    "Hahahah"  // 返回结果
-                }
-                val result = await.await()//等待结果返回，会阻塞当前协程
-                Log.e("tag", "${result}     ====  ${Thread.currentThread().name}")
-            } catch (ex: Exception) {
-
-            } finally {
-
-            }
-
-            runBlocking(Dispatchers.IO) {
-                Log.e("tag", "-------runBlocking------${Thread.currentThread().name}")
-            }
-        }
-        Log.e("tag", "-------------${Thread.currentThread().name}")
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = MyAdapter(datas)

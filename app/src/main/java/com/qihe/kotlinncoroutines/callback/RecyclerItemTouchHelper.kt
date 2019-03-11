@@ -1,6 +1,7 @@
 package com.qihe.kotlinncoroutines.callback
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
@@ -8,6 +9,7 @@ import com.qihe.kotlinncoroutines.MainActivity
 import com.qihe.kotlinncoroutines.dp2px
 import java.util.*
 import android.view.ViewGroup
+import com.qihe.kotlinncoroutines.R
 
 
 class RecyclerItemTouchHelper(private val mAdapter: MainActivity.MyAdapter) : ItemTouchHelper.Callback() {
@@ -22,7 +24,7 @@ class RecyclerItemTouchHelper(private val mAdapter: MainActivity.MyAdapter) : It
      */
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         val dragFlags: Int = ItemTouchHelper.UP or ItemTouchHelper.DOWN
-        val swipeFlags: Int = ItemTouchHelper.LEFT
+        val swipeFlags: Int = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
         return makeMovementFlags(dragFlags, swipeFlags)
     }
 
@@ -68,8 +70,8 @@ class RecyclerItemTouchHelper(private val mAdapter: MainActivity.MyAdapter) : It
      */
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         Log.e("tag", "onSwiped")
-//        mAdapter.datas.removeAt(viewHolder.adapterPosition)
-//        mAdapter.notifyItemRemoved(viewHolder.adapterPosition)
+        mAdapter.datas.removeAt(viewHolder.adapterPosition)
+        mAdapter.notifyItemRemoved(viewHolder.adapterPosition)
     }
 
 
@@ -121,6 +123,7 @@ class RecyclerItemTouchHelper(private val mAdapter: MainActivity.MyAdapter) : It
         super.clearView(recyclerView, viewHolder)
         Log.e("tag", "clearView")
         viewHolder.itemView.scrollX = 0
+        viewHolder?.itemView?.setBackgroundColor(Color.WHITE)
     }
 
     /**
@@ -133,6 +136,10 @@ class RecyclerItemTouchHelper(private val mAdapter: MainActivity.MyAdapter) : It
      *
      */
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+        //判断选中状态
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+            viewHolder?.itemView?.setBackgroundColor(Color.BLUE)
+        }
         super.onSelectedChanged(viewHolder, actionState)
         Log.e("tag", "onSelectedChanged   ${actionState}")
     }
